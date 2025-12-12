@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Heide Open – Texas Hold’em Übersicht</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:#111a33;
+      --muted:#a9b3d1;
+      --text:#eef2ff;
+      --border:#253055;
+
+      --premium:#2dd4bf;
+      --strong:#60a5fa;
+      --playable:#fbbf24;
+      --fold:#94a3b8;
+      --accent:#a78bfa;
+
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 20% 0%, #172554 0%, transparent 55%),
+                  radial-gradient(1200px 600px at 100% 30%, #312e81 0%, transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.45;
+      font-size:15px;
+    }
+    header{
+      padding:20px 14px 8px;
+      max-width:1100px;
+      margin:0 auto;
+    }
+    .title{
+      display:flex;
+      gap:10px;
+      align-items:baseline;
+      flex-wrap:wrap;
+    }
+    h1{
+      margin:0;
+      font-size: clamp(22px, 6vw, 34px);
+      letter-spacing:0.2px;
+    }
+    .subtitle{
+      color:var(--muted);
+      font-size:13px;
+    }
+    main{
+      max-width:1100px;
+      margin:0 auto;
+      padding:8px 14px 32px;
+      display:grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap:14px;
+    }
+    @media (max-width: 900px){
+      main{grid-template-columns:1fr}
+    }
+    @media (max-width: 600px){
+      header{padding:16px 10px 4px}
+      main{padding:6px 10px 22px}
+      body{font-size:14px}
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    @media (min-width: 900px){
+      .card{padding:16px 18px}
+    }
+    h2{
+      margin:0 0 10px;
+      font-size:17px;
+      letter-spacing:0.2px;
+    }
+    h3{
+      margin:12px 0 6px;
+      font-size:14px;
+      color:#dbe4ff;
+    }
+    p, li{color:#e9edff}
+    .muted{color:var(--muted)}
+    .small{ font-size:12px; color:var(--muted); }
+    ul{margin:6px 0 0 18px}
+
+    .kbd{
+      display:inline-block;
+      padding:2px 6px;
+      border:1px solid rgba(255,255,255,0.14);
+      border-bottom-color: rgba(255,255,255,0.26);
+      border-radius:6px;
+      background: rgba(0,0,0,0.2);
+      font-size:12px;
+      color:#e9edff;
+      margin:0 2px;
+    }
+
+    /* Hand ranking */
+    .hand-chart{
+      border-radius:12px;
+      border:1px solid var(--border);
+      padding:10px 10px 8px;
+      background:rgba(0,0,0,0.18);
+      margin-bottom:12px;
+    }
+    .hand-list{
+      list-style:none;
+      padding:0;
+      margin:0;
+      font-size:13px;
+    }
+    .hand-item{
+      display:flex;
+      flex-wrap:wrap;
+      gap:4px 8px;
+      padding:3px 0;
+    }
+    .hand-rank{
+      min-width:115px;
+      font-weight:600;
+    }
+    .hand-desc{
+      flex:1 1 auto;
+      color:#e5e9ff;
+    }
+    .cards{
+      font-family:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+      font-size:12px;
+      background:rgba(15,23,42,0.9);
+      border-radius:6px;
+      padding:2px 6px;
+      border:1px solid rgba(148,163,184,0.6);
+      margin-left:4px;
+      white-space:nowrap;
+    }
+
+    /* Tip-Sektion */
+    .tips{
+      margin-top:10px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      padding:10px 10px 8px;
+      background:rgba(0,0,0,0.26);
+    }
+    .tips-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px 12px;
+    }
+    @media (max-width:700px){
+      .tips-grid{grid-template-columns:1fr}
+    }
+    .tip-category-title{
+      font-weight:600;
+      margin-bottom:4px;
+      font-size:13px;
+    }
+    .tip-category-title.stronger{color:var(--premium);}
+    .tip-category-title.strong{color:var(--strong);}
+    .tip-category-title.medium{color:var(--playable);}
+    .tip-category-title.weak{color:var(--fold);}
+    .hand-tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:4px;
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+    .hand-tag{
+      font-family:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+      font-size:11px;
+      border-radius:999px;
+      padding:2px 7px;
+      border:1px solid rgba(148,163,184,0.7);
+      background:rgba(15,23,42,0.9);
+      color:#e5e9ff;
+    }
+    .tip-note{
+      margin-top:6px;
+      font-size:11px;
+      color:var(--muted);
+    }
+
+    /* Preflop chart (sekundär) */
+    .legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px 10px;
+      margin:8px 0 8px;
+      font-size:11px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:5px 9px;
+      color:var(--muted);
+      background: rgba(0,0,0,0.15);
+    }
+    .dot{
+      width:9px;height:9px;border-radius:3px;display:inline-block;
+    }
+    .chart-wrap{
+      overflow:auto;
+      border-radius:12px;
+      border:1px solid var(--border);
+      -webkit-overflow-scrolling: touch;
+      margin-top:4px;
+    }
+    table.chart{
+      border-collapse:collapse;
+      width:100%;
+      min-width:620px;
+      background: rgba(0,0,0,0.10);
+      font-size:12px;
+    }
+    table.chart th, table.chart td{
+      border:1px solid rgba(255,255,255,0.06);
+      text-align:center;
+      padding:6px 4px;
+      white-space:nowrap;
+    }
+    table.chart th{
+      position:sticky;
+      top:0;
+      background: rgba(17,26,51,0.90);
+      backdrop-filter: blur(8px);
+      z-index:2;
+    }
+    table.chart th.left{
+      position:sticky;
+      left:0;
+      z-index:3;
+      background: rgba(17,26,51,0.90);
+    }
+    table.chart td.left{
+      position:sticky;
+      left:0;
+      z-index:1;
+      background: rgba(17,26,51,0.80);
+      color:#dbe4ff;
+      font-weight:600;
+    }
+    .cell{
+      border-radius:10px;
+      display:inline-block;
+      min-width:40px;
+      padding:5px 4px;
+      border:1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+    }
+    .premium{ border-color: rgba(45,212,191,0.55); background: rgba(45,212,191,0.12); }
+    .strong{  border-color: rgba(96,165,250,0.55); background: rgba(96,165,250,0.12); }
+    .playable{border-color: rgba(251,191,36,0.55); background: rgba(251,191,36,0.12); }
+    .fold{    border-color: rgba(148,163,184,0.45); background: rgba(148,163,184,0.08); color:#cbd5e1;}
+    .note{
+      margin-top:6px;
+      font-size:11px;
+      color:var(--muted);
+    }
+
+    /* Blind table */
+    table.blinds{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:6px;
+      font-size:13px;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,0.10);
+    }
+    table.blinds th, table.blinds td{
+      padding:8px 8px;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      text-align:left;
+      white-space:nowrap;
+    }
+    table.blinds th{
+      color:#dbe4ff;
+      font-weight:700;
+      background: rgba(17,26,51,0.65);
+    }
+    table.blinds tr:last-child td{border-bottom:none}
+    .right{ text-align:right !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">
+      <h1>Heide Open</h1>
+      <div class="subtitle">Texas Hold’em – Hand-Ränge, Starthand-Tipps, Ablauf & Blindstruktur</div>
+    </div>
+    <p class="muted" style="margin:8px 0 0;">
+      Schnell-Referenz für euer Heimturnier (8 Spieler, Startstack 20.000, 10-Minuten-Levels, ca. 120 Minuten).
+    </p>
+  </header>
+
+  <main>
+    <!-- LINKER BEREICH: Rangfolge & Tipps & (weiter unten) Chart -->
+    <section class="card">
+      <!-- WICHTIG: RANGFOLGE -->
+      <div class="hand-chart">
+        <h2>Poker-Handrangfolge (High Card → Royal Flush)</h2>
+        <ul class="hand-list">
+          <li class="hand-item">
+            <span class="hand-rank">1. High Card</span>
+            <span class="hand-desc">
+              Keine Kombination, höchste Karte zählt.
+              <span class="cards">A♣ J♦ 8♠ 5♥ 3♣</span>
+            </span>
+          </li>
+          <li class="hand-item">
+            <span class="hand-rank">2. One Pair</span>
+            <span class="hand-desc">
+              Ein Paar gleicher Karten.
+              <span class="cards">Q♠ Q♦ 9♣ 7♥ 4♠</span>
+            </span>
+          </li>
+          <li class="hand-item">
+            <span class="hand-rank">3. Two Pair</span>
+            <span class="hand-desc">
+              Zwei verschiedene Paare.
+              <span class="cards">J♣ J♥ 8♦ 8♠ 2♣</span>
+            </span>
+          </li>
+          <li class="hand-item">
+            <span class="hand-rank">4. Three of a Kind</span>
+            <span class="hand-desc">
+              Drilling – drei gleiche Karten.
+              <span class="cards">9♠ 9♦ 9♣ K♥ 4♦</span>
+            </span>
+          </li>
+          <li class="hand-item">
+            <span class="hand-rank">5. Straight</span>
+            <span class="hand-desc">
+              Fünf aufeinanderfolgende Werte, beliebige Farben.
+              <span class="cards">6♣ 7♦ 8♠ 9♥ T♣</span>
+            </span>
+          </li>
+          <li class="hand-item">
+            <span class="hand-rank">6. Flush</span>
+            <span class="hand-desc">
+              Fünf Karten derselben Farbe, nicht in Reihenfolge.
+              <span class="cards">A♥ J♥ 9♥ 4♥ 2♥</span>
+            </span>
+          </li>
+          <li class="hand-item">
+            <span class="hand-rank">7. Full House</span>
+            <span class="hand-desc">
+              Drilling + Paar.
+              <span class="cards">T♠ T♥ T♦ 6♣ 6♦</span>
+            </span>
+          </li>
+          <li class="hand-item">
+            <span class="hand-rank">8. Four of a Kind</span>
+            <span class="hand-desc">
+              Vierling – vier gleiche Karten.
+              <span class="cards">Q♣ Q♦ Q♥ Q♠ 3♦</span>
+            </span>
+          </li>
+          <li class="hand-item">
+            <span class="hand-rank">9. Straight Flush</span>
+            <span class="hand-desc">
+              Straße in derselben Farbe.
+              <span class="cards">5♠ 6♠ 7♠ 8♠ 9♠</span>
+            </span>
+          </li>
+          <li class="hand-item">
+            <span class="hand-rank">10. Royal Flush</span>
+            <span class="hand-desc">
+              A-K-Q-J-T in derselben Farbe (beste mögliche Hand).
+              <span class="cards">T♦ J♦ Q♦ K♦ A♦</span>
+            </span>
+          </li>
+        </ul>
+      </div>
+      
+          <!-- RECHTER BEREICH: ABLAUF & BLINDS -->
+    <aside class="card">
+      <h2>Rundenablauf (Texas Hold’em)</h2>
+
+      <h3>1) Preflop</h3>
+      <p class="muted">
+        Dealer-Button bestimmt die Reihenfolge. <strong>Small Blind</strong> und <strong>Big Blind</strong> posten ihre Blinds,
+        dann bekommt jeder Spieler 2 verdeckte Karten (Hole Cards). Die Action startet links vom Big Blind.
+      </p>
+
+      <h3>2) Flop</h3>
+      <p class="muted">
+        3 Gemeinschaftskarten werden aufgedeckt. Neue Setzrunde; Action startet links vom Button (erste aktive Position).
+      </p>
+
+      <h3>3) Turn</h3>
+      <p class="muted">
+        4. Gemeinschaftskarte (Turn) wird aufgedeckt. Wieder eine komplette Setzrunde.
+      </p>
+
+      <h3>4) River</h3>
+      <p class="muted">
+        5. Gemeinschaftskarte (River) wird aufgedeckt. Letzte Setzrunde.
+      </p>
+
+      <h3>5) Showdown</h3>
+      <p class="muted">
+        Sind nach dem River noch mindestens zwei Spieler im Pot, werden die Karten aufgedeckt.
+        Beste 5-Karten-Hand aus 7 Karten (2 Hole Cards + 5 Boardkarten) gewinnt den Pot.
+      </p>
+
+      <h2 style="margin-top:16px;">Mögliche Aktionen</h2>
+      <ul>
+        <li><strong>Check</strong>: Kein Einsatz, nur möglich, wenn vorher niemand gesetzt hat.</li>
+        <li><strong>Bet</strong>: Einsatz eröffnen, wenn noch keine Bet in der Runde ist.</li>
+        <li><strong>Call</strong>: Einen bestehenden Einsatz bezahlen.</li>
+        <li><strong>Raise</strong>: Einsatz erhöhen (Bet oder Raise erhöhen).</li>
+        <li><strong>Fold</strong>: Hand aufgeben, keine weiteren Chips investieren.</li>
+        <li><strong>All-in</strong>: Alle verbleibenden Chips setzen (als Bet, Call oder Raise).</li>
+      </ul>
+      <p class="small">
+        Basis-Tipp: <span class="kbd">Preflop</span> eher tight starten, <span class="kbd">in Position</span> looser werden und
+        mit marginalen Händen keine riesigen Pots ohne klaren Plan spielen.
+      </p>
+
+      <h2 style="margin-top:16px;">Blindstruktur – Heide Open (120 Minuten)</h2>
+      <p class="muted" style="margin-top:4px;">
+        8 Spieler · Startstack <strong>20.000</strong> · Levels <strong>10 Minuten</strong> · insgesamt <strong>12 Levels</strong>.<br/>
+        Ab Level 7: <strong>Big Blind Ante</strong> – der Big Blind postet zusätzlich das Ante für den ganzen Tisch.
+      </p>
+
+      <div style="overflow:auto; -webkit-overflow-scrolling:touch; margin-top:6px;">
+        <table class="blinds" aria-label="Blindstruktur Tabelle">
+          <thead>
+            <tr>
+              <th>Level</th>
+              <th class="right">SB</th>
+              <th class="right">BB</th>
+              <th class="right">Ante</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td class="right">100</td><td class="right">200</td><td class="right">–</td></tr>
+            <tr><td>2</td><td class="right">200</td><td class="right">400</td><td class="right">–</td></tr>
+            <tr><td>3</td><td class="right">300</td><td class="right">600</td><td class="right">–</td></tr>
+            <tr><td>4</td><td class="right">400</td><td class="right">800</td><td class="right">–</td></tr>
+            <tr><td>5</td><td class="right">600</td><td class="right">1.200</td><td class="right">–</td></tr>
+            <tr><td>6</td><td class="right">800</td><td class="right">1.600</td><td class="right">–</td></tr>
+            <tr><td>7</td><td class="right">1.000</td><td class="right">2.000</td><td class="right">2.000 (BB-Ante)</td></tr>
+            <tr><td>8</td><td class="right">1.500</td><td class="right">3.000</td><td class="right">3.000 (BB-Ante)</td></tr>
+            <tr><td>9</td><td class="right">2.000</td><td class="right">4.000</td><td class="right">4.000 (BB-Ante)</td></tr>
+            <tr><td>10</td><td class="right">3.000</td><td class="right">6.000</td><td class="right">6.000 (BB-Ante)</td></tr>
+            <tr><td>11</td><td class="right">4.000</td><td class="right">8.000</td><td class="right">8.000 (BB-Ante)</td></tr>
+            <tr><td>12</td><td class="right">6.000</td><td class="right">12.000</td><td class="right">12.000 (BB-Ante)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="small" style="margin-top:8px;">
+        Falls ihr merkt, dass das Turnier zu langsam ist, könnt ihr ab Level 10 auf 8-Minuten-Levels umstellen
+        oder Level 12 als „Final Level“ weiterspielen, bis ein Sieger feststeht.
+      </p>
+    </aside>
+
+      <!-- TIP SEKTION ZU STARTHÄNDEN -->
+      <div class="tips">
+        <h3>Starthand-Tipps (Heide Open)</h3>
+        <p class="small" style="margin-left:2px;">
+          Faustregel: Je näher du am Button bist, desto mehr der „mittleren“ und „schwachen“ Hände kannst du selektiv spielen.
+        </p>
+        <div class="tips-grid">
+          <div>
+            <div class="tip-category-title stronger">Sehr starke Hände</div>
+            <ul class="hand-tags">
+              <li class="hand-tag">AA</li>
+              <li class="hand-tag">KK</li>
+              <li class="hand-tag">QQ</li>
+              <li class="hand-tag">JJ</li>
+              <li class="hand-tag">AKs</li>
+              <li class="hand-tag">AKo</li>
+            </ul>
+          </div>
+          <div>
+            <div class="tip-category-title strong">Starke Hände</div>
+            <ul class="hand-tags">
+              <li class="hand-tag">TT</li>
+              <li class="hand-tag">99</li>
+              <li class="hand-tag">AQs</li>
+              <li class="hand-tag">AJs</li>
+              <li class="hand-tag">ATs</li>
+              <li class="hand-tag">AQo</li>
+              <li class="hand-tag">AJo</li>
+              <li class="hand-tag">KQs</li>
+            </ul>
+          </div>
+          <div>
+            <div class="tip-category-title medium">Mittlere Hände</div>
+            <ul class="hand-tags">
+              <li class="hand-tag">88</li>
+              <li class="hand-tag">77</li>
+              <li class="hand-tag">66</li>
+              <li class="hand-tag">KJs</li>
+              <li class="hand-tag">QJs</li>
+              <li class="hand-tag">JTs</li>
+              <li class="hand-tag">T9s</li>
+              <li class="hand-tag">A9s–A5s</li>
+            </ul>
+          </div>
+          <div>
+            <div class="tip-category-title weak">Schwache Hände</div>
+            <ul class="hand-tags">
+              <li class="hand-tag">55–22</li>
+              <li class="hand-tag">kleine Suited Connectors (98s–54s)</li>
+              <li class="hand-tag">KTo, QTo, JTo</li>
+              <li class="hand-tag">Ax offsuit (A9o und niedriger)</li>
+              <li class="hand-tag">beliebige „schöne“ Trash-Hände (z.B. J9o, T8o)</li>
+            </ul>
+          </div>
+        </div>
+        <p class="tip-note">
+          Grundidee: „Sehr starke“ & „starke“ Hände kannst du fast aus jeder Position aggressiv spielen.
+          „Mittlere“ & „schwache“ nur in später Position oder in guten Spots – sonst lieber folden.
+        </p>
+      </div>
+     
+
+      <p id="chart-note" class="note">
+        Chart gilt grob für 8-Handed-Turniere. In früher Position tighter, am Button und in den Blinds kannst du etwas looser werden.
+      </p>
+    </section>
+
+
+  </main>
+
+  <footer style="max-width:1100px;margin:0 auto;padding:0 14px 22px;color:var(--muted);font-size:11px;">
+    Heide Open · Referenzseite · Stand: 12.12.2025
+  </footer>
+</body>
+</html>
+
